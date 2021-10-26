@@ -1,7 +1,7 @@
 # looking at density and frequency dependence in datasets from 
 # using one global GLMM model
 # created 23 September 2021
-# last updated 23 September 2021
+# added to github October 2021 
 
 # packages 
 require(ggplot2)
@@ -87,29 +87,9 @@ overdisp_fun <- function(model) {
 ################## TRCY data ################## 
 ################## ################## #########
 
-### model: 0.25m squared
-## model comparison
-
-mod.trcy.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=trcy, family=nbinom2)
-
-# summary
-summary(mod.trcy.halfm)
-r2_nakagawa(mod.trcy.halfm)
-
-## predict
-
-# generate data to predict model over 
-trcy.newd<-expand.grid(log_totcon=seq(min(trcy$log_totcon), max(trcy$log_totcon), length.out=nrow(trcy)), log_tothet=seq(min(trcy$log_tothet), max(trcy$log_tothet), length.out=nrow(trcy)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(7:12))) 
-
-# dataframe
-trcy.pred<-predict(mod.trcy.halfm, newdata=trcy.newd, type='response', re.form=NA)
-
-# new data
-trcy.newd<-cbind(trcy.newd, trcy.pred)
-
 ### model: 15 cm ring
 
-## model comparison
+## model 
 mod.trcy.ring<-glmmTMB(viable_sd~poly(log_ringcon,2)*Trim.Treatment+poly(log_ringhet,2)*Trim.Treatment+(1|rep), data=trcy, family=nbinom2)
 
 # summary
@@ -133,20 +113,6 @@ trcy.newd.ring<-cbind(trcy.newd.ring, trcy.pred.ring)
 # remove insane outliers (there are three of them...)
 tror<-tror[which(tror$viable_sd<170),]
 
-mod.tror.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=tror, family=nbinom2)
-
-# summary
-summary(mod.tror.halfm)
-r2_nakagawa(mod.tror.halfm)
-
-# generate data to predict model over 
-tror.newd<-expand.grid(log_totcon=seq(min(tror$log_totcon), max(tror$log_totcon), length.out=nrow(tror)), log_tothet=seq(min(tror$log_tothet), max(tror$log_tothet), length.out=nrow(tror)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(13:18)))
-
-# predict values of seed set 
-tror.pred<-predict(mod.tror.halfm, newdata=tror.newd, type='response', re.form=NA)
-
-# dataframe 
-tror.newd<-cbind(tror.newd, tror.pred)
 
 ### model: 15cm ring
 
@@ -170,23 +136,6 @@ tror.newd.ring<-cbind(tror.newd.ring, tror.pred.ring)
 ################## VERO data ################## 
 ################## ################## #########
 
-### model 0.25m sq
-
-mod.vero.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=vero, family=nbinom2)
-
-# summary
-summary(mod.vero.halfm)
-r2_nakagawa(mod.vero.halfm)
-
-# generate data to predict model over 
-vero.newd<-expand.grid(log_totcon=seq(min(vero$log_totcon), max(vero$log_totcon), length.out=nrow(vero)), log_tothet=seq(min(vero$log_tothet), max(vero$log_tothet), length.out=nrow(vero)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(19:24))) 
-
-# predict values of seed set 
-vero.pred<-predict(mod.vero.halfm, newdata=vero.newd, type='response', re.form=NA)
-
-# dataframe
-vero.newd<-cbind(vero.newd, vero.pred)
-
 ### model  15cm
 
 mod.vero.ring<-glmmTMB(viable_sd~poly(log_ringcon,2)*Trim.Treatment+poly(log_ringhet,2)*Trim.Treatment+(1|rep), data=vero, family=nbinom2)
@@ -207,23 +156,6 @@ vero.newd.ring<-cbind(vero.newd.ring,vero.pred.ring)
 ################## ################## #########
 ################## ARCA data ################## 
 ################## ################## #########
-
-### model  half meter 
-
-mod.arca.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=arca, family=nbinom2)
-
-# summary
-summary(mod.arca.halfm)
-r2_nakagawa(mod.arca.halfm)
-
-# generate data to predict model over 
-arca.newd<-expand.grid(log_totcon=seq(min(arca$log_totcon), max(arca$log_totcon), length.out=nrow(arca)), log_tothet=seq(min(arca$log_tothet), max(arca$log_tothet), length.out=nrow(arca)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(1:6))) #using 1-6 beecause arca only is in those blocks
-
-# predict values of seed set 
-arca.pred<-predict(mod.arca.halfm, newdata=arca.newd, type='response', re.form=NA)
-
-# dataframe
-arca.newd<-cbind(arca.newd, arca.pred)
 
 # model 15 cm 
 
@@ -250,41 +182,27 @@ arca.newd.ring<-cbind(arca.newd.ring,arca.pred.ring)
 ##### SMALL SCALE ##### 
 ##### ##### ##### ##### 
 
+### summaries 
+
 ## TRCY
 summary(mod.trcy.ring)
-r2_nakagawa(mod.trcy.ring)
-
 ## TROR
 summary(mod.tror.ring)
-r2_nakagawa(mod.tror.ring)
-
 ## VERO
 summary(mod.vero.ring)
-r2_nakagawa(mod.vero.ring)
-
 ## ARCA
 summary(mod.arca.ring)
+
+### r-squareds
+
+## TRCY 
+r2_nakagawa(mod.trcy.ring)
+## TROR 
+r2_nakagawa(mod.tror.ring)
+## VERO 
+r2_nakagawa(mod.vero.ring)
+## ARCA 
 r2_nakagawa(mod.arca.ring)
-
-##### ##### ##### ##### 
-##### LARGE SCALE ##### 
-##### ##### ##### ##### 
-
-## TRCY
-summary(mod.trcy.halfm)
-r2_nakagawa(mod.trcy.halfm)
-
-## TROR
-summary(mod.tror.halfm)
-r2_nakagawa(mod.tror.halfm)
-
-## VERO
-summary(mod.vero.halfm)
-r2_nakagawa(mod.vero.halfm)
-
-## ARCA
-summary(mod.arca.halfm)
-r2_nakagawa(mod.arca.halfm)
 
 ###############################
 ############ PLOTS ############
@@ -294,7 +212,7 @@ r2_nakagawa(mod.arca.halfm)
 john.ramp.cols<- c("steelblue4", "lightsteelblue1", "yellow", "orange", "red")
 
 ##### ##### ##### ##### 
-##### SMALL SCALE ##### 
+#####  15cm SCALE ##### 
 ##### ##### ##### ##### 
 
 ### TRCY 15cm SCALE
@@ -309,28 +227,7 @@ f<-ggplot(vero.newd.ring, aes(log_ringcon, log_ringhet))+geom_tile(aes(fill=vero
 ####### ARCA 15cm
 h<-ggplot(arca.newd.ring, aes(log_ringcon, log_ringhet))+geom_tile(aes(fill=arca.pred.ring))+stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=arca.pred.ring), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="ARCA\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
 
-##### ##### ##### ##### 
-##### LARGE SCALE ##### 
-##### ##### ##### ##### 
-
-### TRCY 0.25m-sq
-a<-ggplot(trcy.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill=trcy.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=trcy.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="TRCY\nfecundity")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
-
-### TROR 0.25m-sq
-c<-ggplot(tror.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill= tror.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=tror.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="TROR\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
-
-####### VERO 0.25m-sq 
-e<-ggplot(vero.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill=vero.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=vero.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="VERO\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
-
-####### ARCA 0.25m-sq 
-g<-ggplot(arca.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill=arca.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=arca.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="ARCA\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
-
-## all together now 
-halfm<-ggarrange(g,a,c,e, nrow=2, ncol=2)
-halfm.test<-annotate_figure(halfm, top='0.25m-sq plot area (square around focal)', bottom=text_grob('log Conspecific Density', size=20), left=text_grob('log Heterospecific Density',size=20, rot=90))
-#halfm.test 
-#ggsave(file='halfm_bestfit.png', plot=halfm.test, width=10, height=8, units="in")
-
+## plot 
 ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
 ring.test<-annotate_figure(ring, top='0.17m-ring plot area (ring around focal)', bottom=text_grob('log Conspecific Density', size=20), left=text_grob('log Heterospecific Density',size=20, rot=90))
 ring.test
@@ -350,7 +247,7 @@ coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.ve
         axis.title.x=element_text(size=20), 
         legend.title=element_text(size=20), 
         legend.text=element_text(size=15))
-#coeff_plot_2020
+coeff_plot_2020
 #ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=6, units="in")
 
 #######################
@@ -362,3 +259,120 @@ sjPlot::tab_model(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring,
                   dv.labels=c("ARCA","TRCY","TROR","VERO"),string.pred = "Coeffcient",
                   string.ci = "Conf. Int (95%)",
                   string.p = "P-Value")
+
+
+
+# ##### ##### ##### ##### 
+# ##### LARGE SCALE ##### 
+# ##### ##### ##### ##### 
+
+# ### model: 0.25m squared
+# ## model comparison
+# 
+# mod.trcy.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=trcy, family=nbinom2)
+# 
+# # summary
+# summary(mod.trcy.halfm)
+# r2_nakagawa(mod.trcy.halfm)
+# 
+# ## predict
+# 
+# # generate data to predict model over
+# trcy.newd<-expand.grid(log_totcon=seq(min(trcy$log_totcon), max(trcy$log_totcon), length.out=nrow(trcy)), log_tothet=seq(min(trcy$log_tothet), max(trcy$log_tothet), length.out=nrow(trcy)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(7:12)))
+# 
+# # dataframe
+# trcy.pred<-predict(mod.trcy.halfm, newdata=trcy.newd, type='response', re.form=NA)
+# 
+# # new data
+# trcy.newd<-cbind(trcy.newd, trcy.pred)
+# 
+# 
+# # model
+# mod.tror.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=tror, family=nbinom2)
+# 
+# # summary
+# summary(mod.tror.halfm)
+# r2_nakagawa(mod.tror.halfm)
+# 
+# # generate data to predict model over
+# tror.newd<-expand.grid(log_totcon=seq(min(tror$log_totcon), max(tror$log_totcon), length.out=nrow(tror)), log_tothet=seq(min(tror$log_tothet), max(tror$log_tothet), length.out=nrow(tror)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(13:18)))
+# 
+# # predict values of seed set
+# tror.pred<-predict(mod.tror.halfm, newdata=tror.newd, type='response', re.form=NA)
+# 
+# # dataframe
+# tror.newd<-cbind(tror.newd, tror.pred)
+# 
+# 
+# ### model 0.25m sq
+# 
+# mod.vero.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=vero, family=nbinom2)
+# 
+# # summary
+# summary(mod.vero.halfm)
+# r2_nakagawa(mod.vero.halfm)
+# 
+# # generate data to predict model over
+# vero.newd<-expand.grid(log_totcon=seq(min(vero$log_totcon), max(vero$log_totcon), length.out=nrow(vero)), log_tothet=seq(min(vero$log_tothet), max(vero$log_tothet), length.out=nrow(vero)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(19:24)))
+# 
+# # predict values of seed set
+# vero.pred<-predict(mod.vero.halfm, newdata=vero.newd, type='response', re.form=NA)
+# 
+# # dataframe
+# vero.newd<-cbind(vero.newd, vero.pred)
+# 
+# ### model  half meter
+# 
+# mod.arca.halfm<-glmmTMB(viable_sd~poly(log_totcon,2)*Trim.Treatment+poly(log_tothet,2)*Trim.Treatment+(1|rep), data=arca, family=nbinom2)
+# 
+# # summary
+# summary(mod.arca.halfm)
+# r2_nakagawa(mod.arca.halfm)
+# 
+# # generate data to predict model over
+# arca.newd<-expand.grid(log_totcon=seq(min(arca$log_totcon), max(arca$log_totcon), length.out=nrow(arca)), log_tothet=seq(min(arca$log_tothet), max(arca$log_tothet), length.out=nrow(arca)), Trim.Treatment=c("CUT","NOCUT"), rep=as.factor(c(1:6))) #using 1-6 beecause arca only is in those blocks
+# 
+# # predict values of seed set
+# arca.pred<-predict(mod.arca.halfm, newdata=arca.newd, type='response', re.form=NA)
+# 
+# # dataframe
+# arca.newd<-cbind(arca.newd, arca.pred)
+
+### not using this in the paper 
+# ## TRCY
+# summary(mod.trcy.halfm)
+# r2_nakagawa(mod.trcy.halfm)
+# 
+# ## TROR
+# summary(mod.tror.halfm)
+# r2_nakagawa(mod.tror.halfm)
+# 
+# ## VERO
+# summary(mod.vero.halfm)
+# r2_nakagawa(mod.vero.halfm)
+# 
+# ## ARCA
+# summary(mod.arca.halfm)
+# r2_nakagawa(mod.arca.halfm)
+
+# ##### ##### ##### ##### 
+# ##### LARGE SCALE ##### 
+# ##### ##### ##### ##### 
+# 
+# ### TRCY 0.25m-sq
+# a<-ggplot(trcy.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill=trcy.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=trcy.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="TRCY\nfecundity")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+# 
+# ### TROR 0.25m-sq
+# c<-ggplot(tror.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill= tror.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=tror.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="TROR\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+# 
+# ####### VERO 0.25m-sq 
+# e<-ggplot(vero.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill=vero.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=vero.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="VERO\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+# 
+# ####### ARCA 0.25m-sq 
+# g<-ggplot(arca.newd, aes(log_totcon,log_tothet))+geom_tile(aes(fill=arca.pred))+stat_contour(bins=12,aes(log_totcon,log_tothet,z=arca.pred), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="ARCA\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+
+# ## all together now 
+# halfm<-ggarrange(g,a,c,e, nrow=2, ncol=2)
+# halfm.test<-annotate_figure(halfm, top='0.25m-sq plot area (square around focal)', bottom=text_grob('log Conspecific Density', size=20), left=text_grob('log Heterospecific Density',size=20, rot=90))
+# #halfm.test 
+# #ggsave(file='halfm_bestfit.png', plot=halfm.test, width=10, height=8, units="in")

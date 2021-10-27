@@ -257,7 +257,7 @@ h<-ggplot(arca.newd.ring, aes(log_ringcon, log_ringhet))+
 ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
 ring.test<-annotate_figure(ring, bottom=text_grob('log Conspecific Density', size=20), left=text_grob('log Heterospecific Density',size=20, rot=90))
 ring.test
-ggsave(file='ring_bestfit.png', plot=ring.test, width=8, height=8, units="in")
+ggsave(file='ring_bestfit.pdf', plot=ring.test, width=8, height=8, units="in")
 
 #######################
 ##### PLOT COEFFS #####
@@ -265,16 +265,21 @@ ggsave(file='ring_bestfit.png', plot=ring.test, width=8, height=8, units="in")
 coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
                             vline.color='gray', 
                              colors=c( '#002E09', "#FC4E07", "#E7B800","#00AFBB"), 
-                             m.labels = c("ARCA", "TRCY", "TROR", "VERO"), axis.title=("Estimate"), legend.title = ("Model"), transform=NULL)+
+                             m.labels = c("ARCA", "TRCY", "TROR", "VERO"), 
+                            axis.title=("Estimate"), 
+                            legend.title = ("Species Model"),
+                            axis.labels = c("untrimmed:quadratic term\nheterospecific", "untrimmed:linear term\nheterospecific", "untrimmed:quadratic term\nconspecific","untrimmed:linear term\nconspecific","quadratic term\nheterospecific","linear term\nheterospecific","trim\ntreatment\n(untrimmed)","quadratic term\nconspecific","linear term\nconspecific"),
+                            transform=NULL)+
   theme_bw()+
   theme(axis.text.x=element_text(size=17), 
-        axis.text.y=element_text(size=15), 
+        axis.text.y=element_text(size=12, hjust=0.5), 
         axis.title.y=element_text(size=15), 
         axis.title.x=element_text(size=20), 
-        legend.title=element_text(size=20), 
-        legend.text=element_text(size=15))
+        legend.title=element_text(size=15), 
+        legend.text=element_text(size=15),
+        legend.position = "top")
 coeff_plot_2020
-#ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=6, units="in")
+#ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=9, units="in")
 
 #######################
 ##### COEFF TABLE #####

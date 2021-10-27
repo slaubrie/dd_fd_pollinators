@@ -257,6 +257,7 @@ h<-ggplot(arca.newd.ring, aes(log_ringcon, log_ringhet))+
 ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
 ring.test<-annotate_figure(ring, bottom=text_grob('log Conspecific Density', size=20), left=text_grob('log Heterospecific Density',size=20, rot=90))
 ring.test
+
 ggsave(file='ring_bestfit.pdf', plot=ring.test, width=8, height=8, units="in")
 
 #######################
@@ -287,7 +288,7 @@ coeff_plot_2020
 
 sjPlot::tab_model(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
                   transform=NULL, 
-                  dv.labels=c("ARCA","TRCY","TROR","VERO"),string.pred = "Coeffcient",
+                  dv.labels=c("ARCA","TRCY","TROR","VERO"),string.pred = "Coefficient",
                   string.ci = "Conf. Int (95%)",
                   string.p = "P-Value")
 

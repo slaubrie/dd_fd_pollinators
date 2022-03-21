@@ -1,14 +1,15 @@
-# Created in July 2021
-# added to github October 2021
+# last updated 21 March 2021 
 # analysis to look at if bagging plants affects their success rate in four focal plants in perenjori 
+# still figuring out github..... :| 
 
 # libraries
 require(lme4)
 require(emmeans)
 require(ggplot2)
+require(glmmTMB)
 
 # working directory
-setwd('/Users/aubrie/Dropbox/UQ/WA.data/PFD2020/DataCode/')
+setwd('/Users/aubrie/Dropbox/UQ/WesternAustraliaProjects/PFD2020/DataCode/')
 
 # data 
 dat<-read.csv('Bagged_Plants2020.csv', header=T)
@@ -19,13 +20,15 @@ df<-dat[which(complete.cases(dat)==T),]
 # add failures in 
 df$fails<-(df$attempts)-(df$successes)
 
+# add in id 
+df$id<-seq(1:nrow(df))
+
 # two column integer matrix with successes then fails 
 # for more info do: ?binomial
 try<-cbind(df$successes, df$fails)
 
 # model
-attach(df)
-mod<-glm(try~species*treatment, family='binomial')
+mod<-glmmTMB(cbind(successes,fails)~species*treatment+(1|id), family='binomial', data=df)
 
 # get data 
 estimates<-emmip(mod, species~treatment, CI=T, type='response', plotit=F)

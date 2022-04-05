@@ -1,7 +1,7 @@
 # looking at density and frequency dependence in datasets from experiment run in 2020
 # using one global GLMM model
 # created 23 September 2021
-# last updated 21 March 2022
+# last updated 6 April 2022
 
 # packages 
 require(ggplot2)
@@ -48,6 +48,14 @@ data$log_totcon<-log1p(data$total_consp)
 data$log_tothet<-log1p(data$total_hetero)
 data$log_ringcon<-log1p(data$ring_consp)
 data$log_ringhet<-log1p(data$ring_hetero)
+
+# can look at frequencies too
+data$freq.range<-data$ring_hetero/(rowSums(data[,7:8]))
+
+# mean and standard deviation of frequencies 
+mean(na.omit(data$freq.range))
+
+sd(na.omit(data$freq.range))
 
 ### fitting some gams with gamm4 and then plotting with ggplot
 

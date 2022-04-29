@@ -44,8 +44,6 @@ names(data)[names(data)=='Trim.Treatment2']<-'Trim.Treatment'
 data$Trim.Treatment<-as.factor(data$Trim.Treatment)
 
 # log transform the densities
-data$log_totcon<-log1p(data$total_consp)
-data$log_tothet<-log1p(data$total_hetero)
 data$log_ringcon<-log1p(data$ring_consp)
 data$log_ringhet<-log1p(data$ring_hetero)
 

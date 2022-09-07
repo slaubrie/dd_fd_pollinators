@@ -203,19 +203,70 @@ john.ramp.cols<- c("steelblue4", "lightsteelblue1", "yellow", "orange", "red")
 ##### ##### ##### ##### 
 
 ### TRCY 15cm 
-b<-ggplot(trcy.newd.ring, aes(log_ringcon, log_ringhet))+geom_tile(aes(fill=trcy.pred.ring))+stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=trcy.pred.ring), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="TRCY\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+b<-ggplot(trcy.newd.ring, 
+          aes(log_ringcon, log_ringhet))+
+  geom_tile(aes(fill=trcy.pred.ring))+
+  stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=trcy.pred.ring), 
+               color="black", size=0.3, alpha=0.3)+
+  scale_fill_gradientn(colours=john.ramp.cols, name="TRCY\nfecundity")+
+  labs(x="", y="")+
+  theme(text=element_text(size=20), 
+        axis.text.x=element_text(size=15), 
+        axis.text.y=element_text(size=15))+
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet),trcy, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+  #facet_wrap(vars(Trim.Treatment))
+b
 
 ### TROR 15cm 
-d<-ggplot(tror.newd.ring, aes(log_ringcon, log_ringhet))+geom_tile(aes(fill= tror.pred.ring))+stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=tror.pred.ring), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name='TROR\nfecundity')+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+d<-ggplot(tror.newd.ring, 
+          aes(log_ringcon, log_ringhet))+
+  geom_tile(aes(fill= tror.pred.ring))+
+  stat_contour(bins=12,aes(log_ringcon, 
+                           log_ringhet,z=tror.pred.ring), 
+               color="black", size=0.3, alpha=0.3)+
+  scale_fill_gradientn(colours=john.ramp.cols, 
+                       name='TROR\nfecundity')+
+  labs(x="", y="")+theme(text=element_text(size=20), 
+                         axis.text.x=element_text(size=15), 
+                         axis.text.y=element_text(size=15))+
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet),tror, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+
+  #facet_wrap(vars(Trim.Treatment))
+d
 
 ####### VERO 15cm
-f<-ggplot(vero.newd.ring, aes(log_ringcon, log_ringhet))+geom_tile(aes(fill=vero.pred.ring))+stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=vero.pred.ring), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="VERO\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+f<-ggplot(vero.newd.ring, 
+          aes(log_ringcon, log_ringhet))+
+  geom_tile(aes(fill=vero.pred.ring))+
+  stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=vero.pred.ring), 
+               color="black", size=0.3, alpha=0.3)+
+  scale_fill_gradientn(colours=john.ramp.cols, 
+                       name="VERO\nfecundity")+
+  labs(x="", y="")+theme(text=element_text(size=20), 
+                         axis.text.x=element_text(size=15), 
+                         axis.text.y=element_text(size=15))+
+  facet_wrap(vars(Trim.Treatment))+
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet),vero, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+f
 
 ####### ARCA 15cm
-h<-ggplot(arca.newd.ring, aes(log_ringcon, log_ringhet))+geom_tile(aes(fill=arca.pred.ring))+stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=arca.pred.ring), color="black", size=0.3, alpha=0.3)+scale_fill_gradientn(colours=john.ramp.cols, name="ARCA\nfecundity")+labs(x="", y="")+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+facet_wrap(vars(Trim.Treatment))
+h<-ggplot(arca.newd.ring, 
+          aes(log_ringcon, log_ringhet))+
+  geom_tile(aes(fill=arca.pred.ring))+
+  stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=arca.pred.ring), 
+               color="black", size=0.3, alpha=0.3)+
+  scale_fill_gradientn(colours=john.ramp.cols, 
+                       name="ARCA\nfecundity")+
+  labs(x="", y="")+theme(text=element_text(size=20), 
+                         axis.text.x=element_text(size=15), 
+                         axis.text.y=element_text(size=15))+
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet),arca, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+
+  #facet_wrap(vars(Trim.Treatment))
+h
 
 ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
-ring.test<-annotate_figure(ring, top='0.17m-ring plot area (ring around focal)', bottom=text_grob('log Conspecific Density', size=20), left=text_grob('log Heterospecific Density',size=20, rot=90))
+ring.test<-annotate_figure(ring, bottom=text_grob('log(Conspecific Density)+1', size=20), left=text_grob('log(Heterospecific Density)+1',size=20, rot=90))
 ring.test
 #ggsave(file='ring_bestfit.png', plot=ring.test, width=10, height=8, units="in")
 

@@ -213,7 +213,13 @@ b<-ggplot(trcy.newd.ring,
   theme(text=element_text(size=20), 
         axis.text.x=element_text(size=15), 
         axis.text.y=element_text(size=15))+
-  geom_jitter(aes(x=log_ringcon, y=log_ringhet),trcy, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet, size=viable_sd),
+              trcy, width=0.1, height=0.1, 
+              alpha=0.5, 
+              color='black', 
+              pch=21,
+              show.legend = F)
+              
   #facet_wrap(vars(Trim.Treatment))
 b
 
@@ -229,7 +235,10 @@ d<-ggplot(tror.newd.ring,
   labs(x="", y="")+theme(text=element_text(size=20), 
                          axis.text.x=element_text(size=15), 
                          axis.text.y=element_text(size=15))+
-  geom_jitter(aes(x=log_ringcon, y=log_ringhet),tror, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet, size=viable_sd),
+              tror, width=0.1, height=0.1, 
+              alpha=0.5, color='black', pch=21,
+              show.legend = F)
 
   #facet_wrap(vars(Trim.Treatment))
 d
@@ -246,7 +255,12 @@ f<-ggplot(vero.newd.ring,
                          axis.text.x=element_text(size=15), 
                          axis.text.y=element_text(size=15))+
   facet_wrap(vars(Trim.Treatment))+
-  geom_jitter(aes(x=log_ringcon, y=log_ringhet),vero, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet, size=viable_sd),
+              vero, width=0.1, height=0.1,
+              alpha=0.5, 
+              color='black', 
+              pch=21,
+              show.legend = F)
 f
 
 ####### ARCA 15cm
@@ -260,7 +274,12 @@ h<-ggplot(arca.newd.ring,
   labs(x="", y="")+theme(text=element_text(size=20), 
                          axis.text.x=element_text(size=15), 
                          axis.text.y=element_text(size=15))+
-  geom_jitter(aes(x=log_ringcon, y=log_ringhet),arca, width=0.1, height=0.1, alpha=0.5, color='black', pch=21)
+  geom_jitter(aes(x=log_ringcon, y=log_ringhet, size=viable_sd),
+              arca, width=0.1, height=0.1, 
+              alpha=0.5, 
+              color='black', 
+              pch=21,
+              show.legend = F)
 
   #facet_wrap(vars(Trim.Treatment))
 h

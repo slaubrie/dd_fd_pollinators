@@ -1,7 +1,7 @@
 # looking at density and frequency dependence in datasets from experiment run in 2020
 # using one global GLMM model
 # created 23 September 2021
-# last updated 6 April 2022
+# last updated September 2022
 
 # packages 
 require(ggplot2)
@@ -55,7 +55,7 @@ mean(na.omit(data$freq.range))
 
 sd(na.omit(data$freq.range))
 
-### fitting some gams with gamm4 and then plotting with ggplot
+### fitting
 
 ## split by species
 spl<-split(data, data$Species, drop=T)
@@ -175,13 +175,31 @@ arca.newd.ring<-cbind(arca.newd.ring,arca.pred.ring)
 ######## summaries ############
 ###############################
 
+#include a confidence interval profile:
+# https://easystats.github.io/parameters/reference/model_parameters.merMod.html
+# "Likelihood-based inference is based on comparing the likelihood for the 
+# maximum-likelihood estimate to the the likelihood for models with 
+# one or more parameter values changed (e.g., set to zero or a range of alternative values).
+# Likelihood ratios for the maximum-likelihood and alternative models
+# are compared to a ????-squared distribution to compute CIs and p-values. 
+# "profile"
+# Applies to non-Bayesian models of 
+# class glm, polr or glmmTMB. 
+# CIs computed by profiling the likelihood curve for a parameter, 
+# using linear interpolation to find where likelihood ratio equals 
+# a critical value; p-values computed using the Wald method with 
+# a normal-distribution (note: this might change in a future update!)
+
 ## TRCY
 summary(mod.trcy.ring)
 r2_nakagawa(mod.trcy.ring)
+confint(mod.trcy.ring, method='uniroot', parm=1:10,  level=0.95) 
 
 ## TROR
 summary(mod.tror.ring)
 r2_nakagawa(mod.tror.ring)
+confint(mod.tror.ring)
+
 
 ## VERO
 summary(mod.vero.ring)
@@ -221,7 +239,7 @@ b<-ggplot(trcy.newd.ring,
               show.legend = F)
               
   #facet_wrap(vars(Trim.Treatment))
-b
+#b
 
 ### TROR 15cm 
 d<-ggplot(tror.newd.ring, 
@@ -241,7 +259,7 @@ d<-ggplot(tror.newd.ring,
               show.legend = F)
 
   #facet_wrap(vars(Trim.Treatment))
-d
+#d
 
 ####### VERO 15cm
 f<-ggplot(vero.newd.ring, 
@@ -261,7 +279,7 @@ f<-ggplot(vero.newd.ring,
               color='black', 
               pch=21,
               show.legend = F)
-f
+#f
 
 ####### ARCA 15cm
 h<-ggplot(arca.newd.ring, 
@@ -282,11 +300,15 @@ h<-ggplot(arca.newd.ring,
               show.legend = F)
 
   #facet_wrap(vars(Trim.Treatment))
-h
+#h
 
-ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
-ring.test<-annotate_figure(ring, bottom=text_grob('log(Conspecific Density)+1', size=20), left=text_grob('log(Heterospecific Density)+1',size=20, rot=90))
-ring.test
+#ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
+#ring.test<-annotate_figure(ring, 
+                           bottom=text_grob('log(Conspecific Density+1)',
+                                            size=20), 
+                           left=text_grob('log(Heterospecific Density+1)',
+                                          size=20, rot=90))
+#ring.test
 #ggsave(file='ring_bestfit.png', plot=ring.test, width=10, height=8, units="in")
 
 #######################
@@ -295,7 +317,10 @@ ring.test
 coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
                             vline.color='gray', 
                              colors=c( '#002E09', "#FC4E07", "#E7B800","#00AFBB"), 
-                             m.labels = c("ARCA", "TRCY", "TROR", "VERO"), axis.title=("Estimate"), legend.title = ("Model"), transform=NULL)+
+                             m.labels = c("ARCA", "TRCY", "TROR", "GORO"), 
+                            axis.title=("Estimate"), 
+                            legend.title = ("Model"), 
+                            transform=NULL)+
   theme_bw()+
   theme(axis.text.x=element_text(size=17), 
         axis.text.y=element_text(size=15), 
@@ -303,7 +328,7 @@ coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.ve
         axis.title.x=element_text(size=20), 
         legend.title=element_text(size=20), 
         legend.text=element_text(size=15))
-#coeff_plot_2020
+# coeff_plot_2020
 #ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=6, units="in")
 
 #######################
@@ -312,6 +337,7 @@ coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.ve
 
 sjPlot::tab_model(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
                   transform=NULL, 
-                  dv.labels=c("ARCA","TRCY","TROR","VERO"),string.pred = "Coeffcient",
+                  dv.labels=c("ARCA","TRCY","TROR","GORO"),
+                  string.pred = "Coeffcient",
                   string.ci = "Conf. Int (95%)",
                   string.p = "P-Value")

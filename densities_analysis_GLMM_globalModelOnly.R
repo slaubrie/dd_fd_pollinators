@@ -19,6 +19,7 @@ require(glmmTMB)
 require(stringr)
 require(jtools)
 require(sjPlot)
+require(ggstance)
 
 # get data 
 
@@ -181,7 +182,7 @@ arca.newd.ring<-cbind(arca.newd.ring,arca.pred.ring)
 # maximum-likelihood estimate to the the likelihood for models with 
 # one or more parameter values changed (e.g., set to zero or a range of alternative values).
 # Likelihood ratios for the maximum-likelihood and alternative models
-# are compared to a ????-squared distribution to compute CIs and p-values. 
+# are compared to a chi-squared distribution to compute CIs and p-values. 
 # "profile"
 # Applies to non-Bayesian models of 
 # class glm, polr or glmmTMB. 
@@ -209,11 +210,12 @@ goro.tab<-confint(mod.vero.ring, method='uniroot', parm=1:10,  level=0.95)
 ## ARCA
 summary(mod.arca.ring)
 r2_nakagawa(mod.arca.ring)
-arca.tab<-confint(mod.arca.ring, method='uniroot', parm=1:10,  level=0.95) 
+arca.tab<-confint(mod.arca.ring, method='uniroot', parm=1:10,  level=0.95)
 
 
-bigtab<-rbind(trcy.tab, tror.tab, goro.tab, arca.tab)
-# write.csv(bigtab, 'table_of_coeffs.csv')
+
+bigtab<-cbind(arca.tab, trcy.tab, tror.tab, goro.tab)
+#write.csv(bigtab, 'table_of_coeffs.csv')
 
 ###############################
 ############ PLOTS ############
@@ -274,7 +276,7 @@ f<-ggplot(vero.newd.ring,
   stat_contour(bins=12,aes(log_ringcon, log_ringhet,z=vero.pred.ring), 
                color="black", size=0.3, alpha=0.3)+
   scale_fill_gradientn(colours=john.ramp.cols, 
-                       name="VERO\nfecundity")+
+                       name="GORO\nfecundity")+
   labs(x="", y="")+theme(text=element_text(size=20), 
                          axis.text.x=element_text(size=15), 
                          axis.text.y=element_text(size=15))+
@@ -308,7 +310,7 @@ h<-ggplot(arca.newd.ring,
   #facet_wrap(vars(Trim.Treatment))
 #h
 
-#ring<-ggarrange(h,b,d,f, nrow=2, ncol=2)
+#ring<-ggarrange(h,f, b,d, nrow=2, ncol=2)
 #ring.test<-annotate_figure(ring,bottom=text_grob('log(Conspecific Density+1)',size=20),left=text_grob('log(Heterospecific Density+1)',size=20, rot=90))
 #ring.test
 #ggsave(file='ring_bestfit.png', plot=ring.test, width=10, height=8, units="in")
@@ -316,6 +318,51 @@ h<-ggplot(arca.newd.ring,
 #######################
 ##### PLOT COEFFS #####
 #######################
+arca.df<-as.data.frame(arca.tab)
+arca.df$species<-rep('ARCA', nrow(arca.df))
+arca.df$names<-rownames(arca.df)
+
+
+trcy.df<-as.data.frame(trcy.tab)
+trcy.df$species<-rep('TRCY', nrow(trcy.df))
+trcy.df$names<-rownames(trcy.df)
+
+
+tror.df<-as.data.frame(tror.tab)
+tror.df$species<-rep('TROR', nrow(tror.df))
+tror.df$names<-rownames(tror.df)
+
+goro.df<-as.data.frame(goro.tab)
+goro.df$species<-rep('GORO', nrow(goro.df))
+goro.df$names<-rownames(goro.df)
+
+coeff.df<-rbind(arca.df,trcy.df,tror.df,goro.df)
+coeff.df<-coeff.df[which(coeff.df$names!="(Intercept)"),]
+names(coeff.df)<-c("upper","lower","Estimate","Species","Variable")
+
+coeff.df %>% mutate(Variable=fct_relevel(Variable, 
+                                         "Trim.TreatmentNOCUT:poly(log_ringhet, 2)2",
+                                         "Trim.TreatmentNOCUT:poly(log_ringhet, 2)1",
+                                         "poly(log_ringcon, 2)2:Trim.TreatmentNOCUT",
+                                         "poly(log_ringcon, 2)1:Trim.TreatmentNOCUT",
+                                         "Trim.TreatmentNOCUT",
+                                         "poly(log_ringhet, 2)2",
+                                         "poly(log_ringhet, 2)1",
+                                         "poly(log_ringcon, 2)2",
+                                         "poly(log_ringcon, 2)1",
+                                         )) %>% ggplot(aes(Variable,Estimate, color=Species))+
+  geom_hline(yintercept=0, color="gray", linetype='longdash')+
+  geom_point(aes(color=Species), position=position_dodge(width=0.5))+
+  geom_linerange(aes(ymin=lower, ymax=upper, color=Species), 
+                 position=position_dodge2(width=0.5))+
+  scale_color_manual(values=c('#002E09', "#FC4E07", "#E7B800","#00AFBB"))+
+  theme_bw()+
+  coord_flip()
+
+ # geom_hline(yintercept=0, color="gray", linetype='longdash')+
+   
+
+#### 
 coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
                             vline.color='gray', 
                              colors=c( '#002E09', "#FC4E07", "#E7B800","#00AFBB"), 
@@ -330,7 +377,7 @@ coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.ve
         axis.title.x=element_text(size=20), 
         legend.title=element_text(size=20), 
         legend.text=element_text(size=15))
- coeff_plot_2020
+# coeff_plot_2020
 #ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=6, units="in")
 
 #######################
@@ -341,9 +388,9 @@ coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.ve
  ## This did not used to make weird errors, but now intercept coefficients are 
  # reported 16 times - i'm using the structure that it used to be to make a new 
  # table by hand in excel....so weird 
-sjPlot::tab_model(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
-                  transform=NULL, 
-                  dv.labels=c("ARCA","TRCY","TROR","GORO"),
-                  string.pred = "Coeffcient",
-                  string.ci = "Conf. Int (95%)",
-                  string.p = "P-Value")
+# sjPlot::tab_model(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring,
+# transform=NULL,
+# dv.labels=c("ARCA","TRCY","TROR","GORO"),
+# string.pred = "Coeffcient",
+# string.ci = "Conf. Int (95%)",
+# string.p = "P-Value")

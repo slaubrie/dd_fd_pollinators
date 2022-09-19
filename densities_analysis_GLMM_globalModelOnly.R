@@ -23,7 +23,7 @@ require(sjPlot)
 # get data 
 
 # set working directory (for aub)
-setwd('/Users/aubrie/Dropbox/UQ/WesternAustraliaProjects/PFD2020/DataCode/')
+#setwd('/Users/aubrie/Dropbox/UQ/WesternAustraliaProjects/PFD2020/DataCode/')
 
 # data 
 dat<-read.csv('pfdata_2020.csv', header=T)
@@ -193,22 +193,27 @@ arca.newd.ring<-cbind(arca.newd.ring,arca.pred.ring)
 ## TRCY
 summary(mod.trcy.ring)
 r2_nakagawa(mod.trcy.ring)
-confint(mod.trcy.ring, method='uniroot', parm=1:10,  level=0.95) 
+trcy.tab<-confint(mod.trcy.ring, method='uniroot', parm=1:10,  level=0.95) 
 
 ## TROR
 summary(mod.tror.ring)
 r2_nakagawa(mod.tror.ring)
-confint(mod.tror.ring)
+tror.tab<-confint(mod.tror.ring, method='uniroot', parm=1:10,  level=0.95) 
 
 
-## VERO
+## GORO
 summary(mod.vero.ring)
 r2_nakagawa(mod.vero.ring)
+goro.tab<-confint(mod.vero.ring, method='uniroot', parm=1:10,  level=0.95) 
 
 ## ARCA
 summary(mod.arca.ring)
 r2_nakagawa(mod.arca.ring)
+arca.tab<-confint(mod.arca.ring, method='uniroot', parm=1:10,  level=0.95) 
 
+
+bigtab<-rbind(trcy.tab, tror.tab, arca.tab, goro.tab)
+write.csv(bigtab, 'table_of_coeffs.csv')
 ###############################
 ############ PLOTS ############
 ###############################
@@ -324,13 +329,17 @@ coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.ve
         axis.title.x=element_text(size=20), 
         legend.title=element_text(size=20), 
         legend.text=element_text(size=15))
-# coeff_plot_2020
+ coeff_plot_2020
 #ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=6, units="in")
 
 #######################
 ##### COEFF TABLE #####
 #######################
 
+ 
+ ## This did not used to make weird errors, but now intercept coefficients are 
+ # reported 16 times - i'm using the structure that it used to be to make a new 
+ # table by hand in excel....so weird 
 sjPlot::tab_model(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
                   transform=NULL, 
                   dv.labels=c("ARCA","TRCY","TROR","GORO"),

@@ -27,7 +27,7 @@ require(sjPlot)
 
 # data 
 dat<-read.csv('pfdata_2020.csv', header=T)
-data<-dat[,c("Species","Trim.Treatment2","rep","Fate","viable_sd","nviable_sd","ring_consp","ring_hetero","total_consp","total_hetero")]
+data<-dat[,c("Species","Trim.Treatment2","rep","Fate","viable_sd","nviable_sd","ring_consp","ring_hetero")]
 
 #rep as factor
 data$rep<-as.factor(data$rep) # random effect poss
@@ -212,8 +212,9 @@ r2_nakagawa(mod.arca.ring)
 arca.tab<-confint(mod.arca.ring, method='uniroot', parm=1:10,  level=0.95) 
 
 
-bigtab<-rbind(trcy.tab, tror.tab, arca.tab, goro.tab)
-write.csv(bigtab, 'table_of_coeffs.csv')
+bigtab<-rbind(trcy.tab, tror.tab, goro.tab, arca.tab)
+# write.csv(bigtab, 'table_of_coeffs.csv')
+
 ###############################
 ############ PLOTS ############
 ###############################

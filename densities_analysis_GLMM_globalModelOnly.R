@@ -20,6 +20,7 @@ require(stringr)
 require(jtools)
 require(sjPlot)
 require(ggstance)
+require(forcats)
 
 # get data 
 
@@ -352,31 +353,40 @@ coeff.df %>% mutate(Variable=fct_relevel(Variable,
                                          "poly(log_ringcon, 2)1",
                                          )) %>% ggplot(aes(Variable,Estimate, color=Species))+
   geom_hline(yintercept=0, color="gray", linetype='longdash')+
-  geom_point(aes(color=Species), position=position_dodge(width=0.5))+
+  geom_point(aes(color=Species, shape=Species), size=2.5, position=position_dodge(width=0.7))+
   geom_linerange(aes(ymin=lower, ymax=upper, color=Species), 
-                 position=position_dodge2(width=0.5))+
+                 position=position_dodge2(width=0.7), lwd=0.8)+
   scale_color_manual(values=c('#002E09', "#FC4E07", "#E7B800","#00AFBB"))+
   theme_bw()+
+  scale_x_discrete(labels=c( "untrimmed:quadratic term\nheterospecific",
+                            "untrimmed:linear term\nheterospecific",
+                           "untrimmed:quadratic term\nconspecific",
+                            "untrimmed:linear term\nconspecific",
+                            "trim\ntreatment\n(untrimmed)",
+                            "quadratic term\nheterospecific",
+                            "linear term\nheterospecific",
+                            "quadratic term\nconspecific",
+                            "linear term\nconspecific"))+
   coord_flip()
 
  # geom_hline(yintercept=0, color="gray", linetype='longdash')+
    
 
 #### 
-coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
-                            vline.color='gray', 
-                             colors=c( '#002E09', "#FC4E07", "#E7B800","#00AFBB"), 
-                             m.labels = c("ARCA", "TRCY", "TROR", "GORO"), 
-                            axis.title=("Estimate"), 
-                            legend.title = ("Model"), 
-                            transform=NULL)+
-  theme_bw()+
-  theme(axis.text.x=element_text(size=17), 
-        axis.text.y=element_text(size=15), 
-        axis.title.y=element_text(size=15), 
-        axis.title.x=element_text(size=20), 
-        legend.title=element_text(size=20), 
-        legend.text=element_text(size=15))
+#coeff_plot_2020<-plot_models(mod.arca.ring, mod.trcy.ring, mod.tror.ring, mod.vero.ring, 
+  #                           vline.color='gray', 
+  #                            colors=c( '#002E09', "#FC4E07", "#E7B800","#00AFBB"), 
+  #                            m.labels = c("ARCA", "TRCY", "TROR", "GORO"), 
+  #                           axis.title=("Estimate"), 
+  #                           legend.title = ("Model"), 
+  #                           transform=NULL)+
+  # theme_bw()+
+  # theme(axis.text.x=element_text(size=17), 
+  #       axis.text.y=element_text(size=15), 
+  #       axis.title.y=element_text(size=15), 
+  #       axis.title.x=element_text(size=20), 
+  #       legend.title=element_text(size=20), 
+  #       legend.text=element_text(size=15))
 # coeff_plot_2020
 #ggsave(file='coeff_plot_2020.png', plot=coeff_plot_2020, width=8, height=6, units="in")
 

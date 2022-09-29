@@ -35,8 +35,18 @@ estimates<-emmip(mod, species~treatment, CI=T, type='response', plotit=F)
 
 # plot 
 plot(10,10)
-labels<-c(arca="ARCA", vero="VERO", tror="TROR", trcy="TRCY")
-ggplot(estimates, aes(x=xvar, y=yvar, group=species,col=species))+geom_line()+geom_pointrange(aes(ymin=LCL, ymax=UCL))+theme_bw()+theme(text=element_text(size=20), axis.text.x=element_text(size=15), axis.text.y=element_text(size=15))+labs(col='Species')+scale_color_manual(labels=labels, values=c("#00AFBB", "#E7B800", "#FC4E07", '#002E09'))+xlab('Treatment')+ylab('Seed Success')
+labels<-c(arca="ARCA", vero="GORO", tror="TROR", trcy="TRCY")
+ggplot(estimates, aes(x=xvar, y=yvar, group=species,col=species, shape=species))+
+  geom_line(lwd=1.2)+
+  geom_pointrange(aes(ymin=LCL, ymax=UCL), size=1)+
+  theme_bw()+theme(text=element_text(size=20), 
+                   axis.text.x=element_text(size=15), 
+                   axis.text.y=element_text(size=15))+
+  labs(col='Species', shape='Species')+
+  scale_color_manual(labels=labels, values=c('#002E09', "#E7B800",  "#00AFBB", "#FC4E07"))+
+  scale_shape_manual(labels=labels, values=c(16, 15, 3, 17))+
+  xlab('Treatment')+
+  ylab('Seed Success')
 
 # get pairs comparison on the species two different bagging treatments
 mod.emm<-emmeans(mod, ~treatment|species)

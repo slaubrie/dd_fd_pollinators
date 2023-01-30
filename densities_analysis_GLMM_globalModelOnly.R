@@ -311,10 +311,10 @@ h<-ggplot(arca.newd.ring,
   #facet_wrap(vars(Trim.Treatment))
 #h
 
-#ring<-ggarrange(h,f, b,d, nrow=2, ncol=2)
-#ring.test<-annotate_figure(ring,bottom=text_grob('log(Conspecific Density+1)',size=20),left=text_grob('log(Heterospecific Density+1)',size=20, rot=90))
-#ring.test
-#ggsave(file='ring_bestfit.png', plot=ring.test, width=10, height=8, units="in")
+# ring<-ggarrange(h,f, b,d, nrow=2, ncol=2)
+# ring.test<-annotate_figure(ring,bottom=text_grob('log(Conspecific Density+1)',size=20),left=text_grob('log(Heterospecific Density+1)',size=20, rot=90))
+# ring.test
+# ggsave(file='ring_bestfit.png', plot=ring.test, width=10, height=8, units="in")
 
 #######################
 ##### PLOT COEFFS #####

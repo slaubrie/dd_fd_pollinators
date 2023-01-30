@@ -1,0 +1,130 @@
+
+# packages 
+require(ggplot2)
+require(gamm4)
+require(dplyr)
+require(visreg)
+require(ggpubr)
+require(mgcViz)
+require(MuMIn) # this is required to get AICc
+require(performance) #for getting r-squared values: https://easystats.github.io/performance/reference/r2_nakagawa.html
+require(lme4)
+require(MASS)
+## this is how i installed glmmTMB remotes::install_github("glmmTMB/glmmTMB/glmmTMB")
+require(glmmTMB)
+require(stringr)
+require(jtools)
+require(sjPlot)
+require(ggstance)
+require(forcats)
+require(vegan)
+# get data 
+
+# set working directory (for aub)
+#setwd('/Users/aubrie/Dropbox/UQ/WesternAustraliaProjects/PFD2020/DataCode/')
+
+# data 
+dat<-read.csv('ring_richnessData_2020.csv', header=T)
+dat2<-dat[,c(3,9,17:90)]
+  
+## split by species
+spl<-split(dat2, dat$focal, drop=T)
+trcy<-spl$TRCY
+tror<-spl$TROR
+vero<-spl$VERO
+arca<-spl$ARCA
+
+### arca nmds ###
+arca_noCon<-arca[,c(1:2,4:76)]
+arcadf<-as.data.frame(arca_noCon[,c(3:75)])
+
+# remove all zero 
+arca_noCon$sum<-rowSums(arca_noCon[c(3:75)])
+arca_nocon_nozero<-arca_noCon[which(arca_noCon$sum!=0),]
+
+# matrix
+noZero<-arcadf %>% filter_all(any_vars(. !=0))
+a_nmds<-metaMDS(noZero, k=2)
+plot(a_nmds)
+
+# treatment vector 
+a_trt<-arca_nocon_nozero$Trim.Treatment2
+
+### trcy nmds ###
+trcy_noCon<-trcy[,c(1:60,62:76)]
+trcydf<-as.data.frame(trcy_noCon[,c(3:75)])
+
+# remove all zero 
+trcy_noCon$sum<-rowSums(trcy_noCon[c(3:75)])
+trcy_nocon_nozero<-trcy_noCon[which(trcy_noCon$sum!=0),]
+
+# matrix
+noZero<-trcydf %>% filter_all(any_vars(. !=0))
+tc_nmds<-metaMDS(noZero, k=2)
+plot(tc_nmds)
+
+# treatment vector 
+tc_trt<-trcy_nocon_nozero$Trim.Treatment2
+
+### tror nmds ###
+tror_noCon<-tror[,c(1:61,63:76)]
+trordf<-as.data.frame(tror_noCon[,c(3:75)])
+
+# remove all zero 
+tror_noCon$sum<-rowSums(tror_noCon[c(3:75)])
+tror_nocon_nozero<-tror_noCon[which(tror_noCon$sum!=0),]
+
+# matrix
+noZero<-trordf %>% filter_all(any_vars(. !=0))
+to_nmds<-metaMDS(noZero, k=2)
+plot(to_nmds)
+
+# treatment vector 
+to_trt<-tror_nocon_nozero$Trim.Treatment2
+
+### vero nmds ###
+vero_noCon<-vero[,c(1:73,75:76)]
+verodf<-as.data.frame(vero_noCon[,c(3:75)])
+
+# remove all zero 
+vero_noCon$sum<-rowSums(vero_noCon[c(3:75)])
+vero_nocon_nozero<-vero_noCon[which(vero_noCon$sum!=0),]
+
+# matrix
+noZero<-verodf %>% filter_all(any_vars(. !=0))
+vr_nmds<-metaMDS(noZero,k=2)
+plot(vr_nmds)
+
+# treatment vector 
+vr_trt<-vero_nocon_nozero$Trim.Treatment2
+
+# plot
+# green - no cut, blue- cut
+
+dev.off()
+par(mfrow=c(2,2), mar = c(1, 1, 1, 1))
+
+ordiplot(a_nmds,type="n")
+ordihull(a_nmds,groups=a_trt,draw="polygon",col=c("blue","green"),label=F)
+text(x=-2, y=1.5, label="ARCA")
+orditorp(a_nmds,display="species", col='red', air=0.01)
+orditorp(a_nmds,display="sites", label=F)
+
+ordiplot(vr_nmds,type="n")
+text(x=0.4, y=0.2, label="GORO")
+ordihull(vr_nmds,groups=vr_trt,draw="polygon",col=c("blue","green"),label=F)
+orditorp(vr_nmds,display="species", col='red', air=0.01)
+orditorp(vr_nmds,display="sites", label=F)
+
+ordiplot(tc_nmds,type="n")
+text(x=7, y=1.3, label="TRCY")
+ordihull(tc_nmds,groups=tc_trt,draw="polygon",col=c("blue","green"),label=F)
+orditorp(tc_nmds,display="species", col='red', air=0.01)
+orditorp(tc_nmds,display="sites", label=F)
+
+ordiplot(to_nmds,type="n")
+text(x=0.6, y=1, label="TROR")
+ordihull(to_nmds,groups=to_trt,draw="polygon",col=c("blue","green"),label=F)
+orditorp(to_nmds,display="species", col='red', air=0.01)
+orditorp(to_nmds,display="sites", label=F)
+

@@ -24,9 +24,6 @@ require(forcats)
 
 # get data 
 
-# set working directory (for aub)
-#setwd('/Users/aubrie/Dropbox/UQ/WesternAustraliaProjects/PFD2020/DataCode/')
-
 # data 
 dat<-read.csv('pfdata_2020.csv', header=T)
 data<-dat[,c("Species","Trim.Treatment2","rep","Fate","viable_sd","nviable_sd","ring_consp","ring_hetero")]

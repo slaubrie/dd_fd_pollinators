@@ -8,9 +8,6 @@ require(emmeans)
 require(ggplot2)
 require(glmmTMB)
 
-# working directory
-setwd('/Users/aubrie/Dropbox/UQ/WesternAustraliaProjects/PFD2020/DataCode/')
-
 # data 
 dat<-read.csv('Bagged_Plants2020.csv', header=T)
 
